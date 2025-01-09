@@ -4,7 +4,7 @@ on:
     branches:
       -main
 jobs:
-  script:
+  SCRIPT:
     runs-on: ubuntu-latest
     steps: 
 
