@@ -10,4 +10,4 @@ jobs:
 
         -name: Hola Mundo
           run: |
-            echo "Hola Mundo"
+            echo 'Hola Mundo'
