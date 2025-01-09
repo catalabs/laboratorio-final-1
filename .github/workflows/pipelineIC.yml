@@ -6,7 +6,7 @@ on:
 jobs:
   script:
     runs-on: ubuntu-latest
-      steps: 
+    steps: 
         -name: Hola Mundo
           run: |
             echo "Hola Mundo"
