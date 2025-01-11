@@ -19,3 +19,23 @@ jobs:
 
         - name: Set enviroment variables
           run: echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+
+        - name: Validate and configure build.gradle
+          env:
+            TOKEN_EF: ${{ secrets.TOKEN_EF }}
+          run: |
+            if [ -f "build.gradle" ]; then
+              echo "Encontró el archivo"
+              echo "Verificando cpnfiguración del plugin sonar"
+              if ! grep -q 'id "org.sonarqube" version "3.3"' build.gradle; then
+                sed -i '/id '\''java'\''/a \ \ \ \ id '\''org.sonarqube'\'' version '\''3.3'\''' build.gradle
+                echo "Plugin de Sonarcloud añadido a build.gradle"
+
+            else
+              echo "Plugin de Sonarcloud ya esta configurado en build.gradle"
+
+            else
+              echo "No se encuentra el archivo build.gradle"
+              exit 1
+             
+            fi
