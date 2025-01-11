@@ -35,7 +35,6 @@ jobs:
                 echo "Plugin de Sonarcloud ya esta configurado en build.gradle"
               fi
 
-
             else
               echo "No se encuentra el archivo build.gradle"
               exit 1
