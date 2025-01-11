@@ -6,7 +6,7 @@ on:
 
 jobs:
   SAST:
-    runs-on: ubuntu-24.05
+    runs-on: ubuntu-latest
     steps: 
         - name: Checkout code
           uses: action/checkout@v3
