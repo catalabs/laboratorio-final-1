@@ -56,16 +56,18 @@ jobs:
                 -d "project=$TOKEN_EF" \
                 -d "organization=catalabs" \
                 -d "project=public"  \)
-                if [ "$response" -ne 201]; then
 
-                  echo "Proyecto creado exitosamente"
-                fi
-                echo "Estableciendo rama main por defecto"
-                curl -s -f -X POST -u "$TOKEN_EF:" \
-                  "https://sonarcloud.io/api/project_branches/rename" \
-                  -d "name=rama_02"
-                  -d "project=$TOKEN_EF"
-                echo "project_created=true" >> GITHUB_ENV
+              if [ "$response" -ne 201]; then
+                echo "Proyecto creado exitosamente"
+              fi
+
+              echo "Estableciendo rama main por defecto"
+              curl -s -f -X POST -u "$TOKEN_EF:" \
+                "https://sonarcloud.io/api/project_branches/rename" \
+                -d "name=rama_02"
+                -d "project=$TOKEN_EF"
+              echo "project_created=true" >> GITHUB_ENV
+
             else
                 echo "El proyecto ya existe en sonar"
                 echo "project_created"
