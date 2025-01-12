@@ -46,25 +46,7 @@ jobs:
           run: |
             echo "Verificando si el proyecto $REPO_NAME existe en Sonarcloud"
             response=$(curl -s -o /dev/null -w "%{http_code}" -u "$TOKEN_EF:" \ "https://sonarcloud.io/api/projects/search?projects=$REPO_NAME")
-            if [ "$response" -ne 200 ]; then
-              echo "El proyecto no existe. Creandolo en Sonarcloud"
-              create_response=$(curl -s -w "%{http_code}" -o /dev/null -X POST -u "$TOKEN_EF:" \
-                "https://sonarcloud.io/api/projects/create" \
-                -d "name=$TOKEN_EF" \
-                -d "project=$REPO_NAME" \
-                -d "organization=catalabs" \
-                -d "project=public"  \)
-
-              if [ "$response" -ne 201]; then
-                echo "Proyecto creado exitosamente"
-              fi
-
-              echo "Estableciendo rama main por defecto"
-              curl -s -f -X POST -u "$TOKEN_EF:" \
-                "https://sonarcloud.io/api/project_branches/rename" \
-                -d "name=main"
-                -d "project=$TOKEN_EF"
-              echo "project_created=true" >> GITHUB_ENV
+            
 
             else
                 echo "El proyecto ya existe en sonar"
