@@ -54,7 +54,7 @@ jobs:
                 "https://sonarcloud.io/api/projects/create" \
                 -d "name=$TOKEN_EF" \
                 -d "project=$TOKEN_EF" \
-                -d "user=catalabs" \
+                -d "organization=catalabs" \
                 -d "project=public"  \)
                 if [ "$response" -ne 201]; then
                   echo "Proyecto creado exitosamente"
