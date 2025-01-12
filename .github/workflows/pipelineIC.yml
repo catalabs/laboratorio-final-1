@@ -54,8 +54,8 @@ jobs:
               create_response=$(curl -s -w "%{http_code}" -o /dev/null -X POST -u "$TOKEN_EF:" \
                 "https://sonarcloud.io/api/projects/create" \
                 -d "name=$TOKEN_EF" \
-                -d "project=$TOKEN_EF" \
-                -d "user=catalabs" \
+                -d "project=$REPO_NAME" \
+                -d "organization=catalabs" \
                 -d "project=public"  \)
 
               if [ "$response" -ne 201]; then
