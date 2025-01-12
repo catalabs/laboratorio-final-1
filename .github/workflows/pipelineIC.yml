@@ -112,7 +112,7 @@ jobs:
             REPO_NAME: ${{ github.event.repository.name }}
           run: |
             echo "Validando el estado de Quality Gate..."
-            analysisId=$(curl -s -u "$TOKEN_EF" \
+            analysisId=$(curl -s -u "$TOKEN_EF:" \
               "https://sonarcloud.io/api/ce/component?component=$REPO_NAME" | jq -r '.current.analysisId')
 
             qualityGateStatus=$(curl -s -u "$TOKEN_EF:" \ 
