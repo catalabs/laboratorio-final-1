@@ -48,5 +48,10 @@ jobs:
             response=$(curl -s -o /dev/null -w "%{http_code}" -u "$TOKEN_EF:" \
               "https://sonarcloud.io/api/projects/search?projects=$REPO_NAME")
 
+            if [ "$response" -ne 200 ]; then
+              echo "El proyecto no existe"
+
+            fi
+
             
          
