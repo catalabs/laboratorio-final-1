@@ -67,6 +67,7 @@ jobs:
                 -d "name=main"
                 -d "project=$REPO_NAME"
               echo "project_created=true" >> $GITHUB_ENV
+
             else
               echo "El proyecto ya existe en SonarCloud"
               echo "project_created=false" >> $GITHUB_ENV
