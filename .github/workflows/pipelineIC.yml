@@ -36,7 +36,6 @@ jobs:
             else
               echo "No se encuentra el archivo build.gradle"
               exit 1
-             
             fi
 
         - name: Validate and create Sonarcloud project
@@ -45,7 +44,7 @@ jobs:
             TOKEN_EF: ${{ secrets.TOKEN_EF }}
             REPO_NAME: ${{ github.event.repository.name }}
           run: |
-            echo "Verificando si el proyecto $REPO_NAME"
+            echo "Verificando si el proyecto $REPO_NAME existe en Sonarcloud"
             response=$(curl -s -o /dev/null -w "%{http_code}" -u "$TOKEN_EF:" \
               "https://sonarcloud.io/api/projects/search?projects="$REPO_NAME")
 
