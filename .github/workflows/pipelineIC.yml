@@ -72,5 +72,66 @@ jobs:
               echo "project_created=false" >> $GITHUB_ENV
             fi
 
+        - name: Enable execution gradlew
+          run: |
+            chmod 777 gradlew
+
+        - name: Perform Initial Analysis (if project created)
+          if: env.project_created == 'true'
+          env: 
+            TOKEN_EF: ${{ secrets.TOKEN_EF }}
+            REPO_NAME: ${{ github.event.repository.name }}
+          run: |
+            echo "Realizando análisis inicial en la rama main..."
+            ./gradlew sonarqube \
+              Dsonar.projectKey=$REPO_NAME \
+              Dsonar.organization=catalabs \
+              Dsonar.host.url=https://sonarcloud.io \
+              Dsonar.token=$TOKEN_EF \
+              Dsonar.branch.name=main
+
+        - name: Perform branch analysis
+          if: env.project_created == 'false'
+          env:
+            TOKEN_EF: ${{ secrets.TOKEN_EF }}
+            REPO_NAME: ${{ github.event.repository.name }}
+            BRANCH_NAME: ${{ github.ref_name }}
+          run: |
+            echo  "Realizando análisis en la rama actual: $BRANCH_NAME..."
+            ./gradlew sonarqube \
+              Dsonar.projectKey=$REPO_NAME \
+              Dsonar.organization=catalabs \
+              Dsonar.host.url=https://sonarcloud.io \
+              Dsonar.token=$TOKEN_EF \
+              Dsonar.branch.name=$BRANCH_NAME
+
+        - name: Validate Quality Gate
+          env:
+            TOKEN_EF: ${{ secrets.TOKEN_EF }}
+            REPO_NAME: ${{ github.event.repository.name }}
+          run: |
+            echo "Validando el estado de Quality Gate..."
+            analysisId=$(curl -s -u "$TOKEN_EF" \
+              "https://sonarcloud.io/api/ce/component?component=$REPO_NAME" | jq -r '.current.analysisId')
+
+            qualityGateStatus=$(curl -s -u "$TOKEN_EF:" \ 
+              "https://sonarcloud.io/qualitygates/project_status?analysisId" | jq -r '.projectStatus.status')
+
+            if [ "$qualityGateStatus" != "OK" ]; then
+              echo "El proyecto no cumple con el Quality Gate: $qualityGateStatus."
+              echo "Verificando las vulnerabilidades críticas..."
+              vulnerabilities=$(curl -s -u "$TOKEN_EF:" \
+                "https://sonarcloud.io/api/issues/search?componentKeys=$REPO_NAME&severities=CRITICAL,BLOCKER" | jq -r '.total')
+              if [ "$vulnerabilities" -gt 0 ]; then
+                echo "Se encontraron $vulnerabilities vulnerabilidades críticas. El proyecto no cumple con los estándares de seguridad"
+                #exit 1
+              fi
+            
+            else
+              echo "El proyecto cumple con el quality gate"
+            fi
+
+            
+
             
          
