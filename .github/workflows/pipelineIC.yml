@@ -18,7 +18,7 @@ jobs:
             distribution: 'adopt'
 
         - name: Set enviroment variables
-          run: echo "BRANCH_NAME=${{ github.ref_name }}" >> "$GITHUB_ENV"
+          run: echo "BRANCH_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
 
         - name: Validate and configure build.gradle
           env:
@@ -30,51 +30,11 @@ jobs:
               if ! grep -q 'id "org.sonarqube" version "3.3"' build.gradle; then
                 sed -i '/id '\''java'\''/a \ \ \ \ id '\''org.sonarqube'\'' version '\''3.3'\''' build.gradle
                 echo "Plugin de Sonarcloud añadido a build.gradle"
-
               else
                 echo "Plugin de Sonarcloud ya esta configurado en build.gradle"
               fi
-
             else
               echo "No se encuentra el archivo build.gradle"
               exit 1
              
             fi
-
-          - name: Validate and create SonarCloud Project
-            id: validate project
-            env:
-              TOKEN_EF: ${{ secrets.TOKEN_EF }}
-              REPO_NAME: ${{ github.event.repository.name }}
-            run: |
-              echo "Verificando si el proyecto $REPO_NAME"
-              response=$(curl -s -o /dev/null -w "%{http_code}" -u "$TOKEN_EF:" \
-                "https://sonarcloud.io/api/projects/search?projects="$TOKEN_EF")
-
-              if [ "$response" -ne 200 ]; then
-                echo "El proyecto no existe. Creandolo en Sonarcloud"
-                create_response=$(curl -s -w "%{http_code}" -o /dev/null -X POST -u "$TOKEN_EF:" \
-                "https://sonarcloud.io/api/projects/create" \
-                -d "name=$TOKEN_EF" \
-                -d "project=$TOKEN_EF" \
-                -d "user=catalabs" \
-                -d "project=public"  \)
-
-                if [ "$response" -ne 201]; then
-                  echo "Proyecto creado exitosamente"
-                fi
-
-                echo "Estableciendo rama main por defecto"
-                curl -s -f -X POST -u "$TOKEN_EF:" \
-                  "https://sonarcloud.io/api/project_branches/recreate" \
-                  -d "name=rama_02"
-                  -d "project=$TOKEN_EF"
-                echo "project_created=true" >> GITHUB_ENV
-
-              else
-                echo "El proyecto ya existe en sonar"
-                echo "project_created"
-              fi
-
-
-
