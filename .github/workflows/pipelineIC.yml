@@ -39,7 +39,7 @@ jobs:
              
             fi
 
-        -name: Validate and create Sonarcloud project
+        - name: Validate and create Sonarcloud project
           id: validate-project
           env: 
             TOKEN_EF: ${{ secrets.TOKEN_EF }}
