@@ -64,7 +64,7 @@ jobs:
               echo "Estableciendo rama main por defecto"
               curl -s -f -X POST -u "$TOKEN_EF:" \
                 "https://sonarcloud.io/api/project_branches/rename" \
-                -d "name=rama_02"
+                -d "name=main"
                 -d "project=$TOKEN_EF"
               echo "project_created=true" >> GITHUB_ENV
 
